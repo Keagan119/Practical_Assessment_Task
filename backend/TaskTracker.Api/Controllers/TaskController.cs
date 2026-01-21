@@ -17,11 +17,40 @@ namespace TaskTracker.Api.Controllers
 
      
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
+public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks(
+    [FromQuery] string? q,
+    [FromQuery] string? sort = "dueDate:asc"
+)
+{
+
+    IQueryable<TaskItem> query = _db.Tasks;
+
+  
+    if (!string.IsNullOrWhiteSpace(q))
+    {
+        string search = q.Trim().ToLower();
+        query = query.Where(t =>
+            t.Title.ToLower().Contains(search) ||
+            (t.Description != null && t.Description.ToLower().Contains(search))
+        );
+    }
+
+    
+    if (!string.IsNullOrWhiteSpace(sort))
+    {
+        if (sort.Equals("dueDate:desc", StringComparison.OrdinalIgnoreCase))
         {
-            var tasks = await _db.Tasks.ToListAsync();
-            return Ok(tasks);
+            query = query.OrderByDescending(t => t.DueDate);
         }
+        else 
+        {
+            query = query.OrderBy(t => t.DueDate);
+        }
+    }
+
+    var tasks = await query.ToListAsync();
+    return Ok(tasks);
+}
 
       
         [HttpPost]
@@ -34,7 +63,7 @@ public async Task<ActionResult<TaskItem>> CreateTask([FromBody] TaskItem task)
     return CreatedAtAction(nameof(GetTaskById), new { id = task.Id }, task);
 }
 
-        /
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskItem>> GetTaskById(int id)
         {
@@ -61,7 +90,7 @@ public async Task<ActionResult<TaskItem>> CreateTask([FromBody] TaskItem task)
         }
 
        
-[HttpDelete("task-delete/{id}")]
+[HttpDelete("{id}")]
 public async Task<IActionResult> DeleteTask(int id)
 {
     var task = await _db.Tasks.FindAsync(id);
