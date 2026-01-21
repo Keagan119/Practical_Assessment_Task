@@ -30,8 +30,21 @@
   <div *ngIf="!isLoading && tasks.length === 0 && !showTaskForm" class="alert alert-info">
     No tasks found. Click "Add New Task" to get started.
   </div>
+  <div *ngIf="!showTaskForm">
+ <div class="mb-3 d-flex align-items-center gap-2">
+  <input type="text" class="form-control" placeholder="Search tasks..." [(ngModel)]="searchQuery" (input)="loadTasks()" />
 
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="!isLoading && tasks.length > 0">
+
+  <select class="form-select w-auto" [(ngModel)]="sortOption" (change)="loadTasks()">
+    <option value="dueDate:asc">Due Date ↑</option>
+    <option value="dueDate:desc">Due Date ↓</option>
+  </select>
+  </div>
+ 
+</div>
+
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="!isLoading && tasks.length > 0 && !showTaskForm">
     <div class="col" *ngFor="let task of tasks">
       <div class="card h-100">
         <div class="card-body">
