@@ -22,7 +22,7 @@ export class TaskFormComponent implements OnInit {
   error: string | null = null;
   
   statusOptions = [
-  { value: 'Pending', label: 'Pending' },
+  { value: 'New', label: 'New' },
   { value: 'InProgress', label: 'In Progress' },
   { value: 'Done', label: 'Done' }
 ];
@@ -41,8 +41,8 @@ export class TaskFormComponent implements OnInit {
    this.taskForm = this.fb.group({
   title: ['', [Validators.required, Validators.maxLength(100)]],
   description: ['', Validators.maxLength(500)],
-  status: ['Pending', Validators.required],
-  priority: ['Medium', Validators.required],
+  status: ['New', Validators.required],
+  priority: ['Low', Validators.required],
   dueDate: [null]
 });
   }
@@ -52,8 +52,8 @@ export class TaskFormComponent implements OnInit {
       this.taskForm.patchValue({
         title: this.task.title || '',
         description: this.task.description || '',
-        status: this.task.status || 'Pending',
-        priority: this.task.priority || 'Medium',
+        status: this.task.status || 'New',
+        priority: this.task.priority || 'Low',
         dueDate: this.task.dueDate || null
       });
     }
