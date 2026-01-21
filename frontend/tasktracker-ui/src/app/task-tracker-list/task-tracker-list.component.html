@@ -1,0 +1,69 @@
+<!-- task-tracker-list.component.html -->
+<div class="container mt-4">
+  <h2>Task Tracker</h2>
+  
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <div class="mb-3">
+    <button class="btn btn-primary" (click)="onAddTask()" [disabled]="isLoading">
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Add New Task
+    </button>
+  </div>
+
+  <app-task-form
+    *ngIf="showTaskForm"
+    [mode]="selectedTask ? 'edit' : 'create'"
+    [task]="selectedTask || {}"
+    (saved)="onTaskSaved()"
+    (cancelled)="onCancelEdit()">
+  </app-task-form>
+
+  <div *ngIf="isLoading && !showTaskForm" class="text-center my-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && tasks.length === 0 && !showTaskForm" class="alert alert-info">
+    No tasks found. Click "Add New Task" to get started.
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="!isLoading && tasks.length > 0">
+    <div class="col" *ngFor="let task of tasks">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ task.title }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            <span class="badge" [ngClass]="{
+              'bg-warning': task.status === 'pending',
+              'bg-primary': task.status === 'in progress',
+              'bg-success': task.status === 'completed'
+            }">
+              {{ (task.status || '')}}
+            </span>
+            <span class="ms-2 badge" [ngClass]="{
+              'bg-secondary': task.priority === 'low',
+              'bg-info': task.priority === 'medium',
+              'bg-danger': task.priority === 'high',
+              'bg-light text-dark': !task.priority
+            }">
+              {{ (task.priority || '')  }}
+              <span *ngIf="!task.priority">None</span>
+            </span>
+          </h6>
+          <p class="card-text">{{ task.description || 'No description' }}</p>
+          <p class="card-text" *ngIf="task.dueDate">
+            <small class="text-muted">Due: {{ task.dueDate | date:'mediumDate' }}</small>
+          </p>
+        </div>
+        <div class="card-footer bg-transparent">
+          <button class="btn btn-sm btn-outline-primary me-2" (click)="onEditTask(task)">Edit</button>
+          <button class="btn btn-sm btn-outline-danger" (click)="onDeleteTask(task.id)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
