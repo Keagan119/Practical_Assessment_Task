@@ -4,14 +4,14 @@
 </div>
 
 <div class="modal-body">
-  <!-- Error Alert -->
+
   <div *ngIf="error" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
     {{ error }}
     <button type="button" class="btn-close" (click)="error = null" aria-label="Close"></button>
   </div>
 
   <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
-    <!-- Title -->
+   
     <div class="mb-3">
       <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
       <input
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <!-- Description -->
+   
     <div class="mb-3">
       <label for="description" class="form-label">Description</label>
       <textarea
@@ -48,7 +48,7 @@
     </div>
 
     <div class="row">
-      <!-- Status -->
+    
       <div class="col-md-6 mb-3">
         <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
         <select
@@ -63,7 +63,6 @@
         </select>
       </div>
 
-      <!-- Priority -->
       <div class="col-md-6 mb-3">
         <label for="priority" class="form-label">Priority <span class="text-danger">*</span></label>
         <select
@@ -79,7 +78,7 @@
       </div>
     </div>
 
-    <!-- Due Date -->
+   
     <div class="mb-4">
       <label for="dueDate" class="form-label">Due Date (Optional)</label>
       <input
