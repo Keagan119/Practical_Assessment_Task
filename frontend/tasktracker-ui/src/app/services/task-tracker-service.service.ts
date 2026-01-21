@@ -11,32 +11,32 @@ export class TaskTrackerServiceService {
 
   constructor(private http: HttpClient) {}
 
-  // Get all tasks
+
   getTasks(): Observable<TaskItem[]> {
     return this.http.get<TaskItem[]>(`${this.baseUrl}/task`);
   }
 
-  // Get a single task by ID
+
   getTask(id: number): Observable<TaskItem> {
     return this.http.get<TaskItem>(`${this.baseUrl}/task/${id}`);
   }
 
-  // Create a new task
-  createTask(task: Partial<TaskItem>): Observable<TaskItem> {
+
+  createTask(task: TaskItem): Observable<TaskItem> {
     return this.http.post<TaskItem>(`${this.baseUrl}/task`, task);
   }
 
-  // Update an existing task
-  updateTask(id: number, task: Partial<TaskItem>): Observable<TaskItem> {
+
+  updateTask(id: number, task: TaskItem): Observable<TaskItem> {
     return this.http.put<TaskItem>(`${this.baseUrl}/task/${id}`, task);
   }
 
-  // Delete a task
+ 
   deleteTask(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/task/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/task/task-delete/${id}`);
   }
 
-  // Test endpoint (can be removed if not needed)
+
   getTest(): Observable<string> {
     return this.http.get(`${this.baseUrl}/test`, {
       responseType: 'text'

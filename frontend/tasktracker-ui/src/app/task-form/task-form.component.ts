@@ -22,28 +22,29 @@ export class TaskFormComponent implements OnInit {
   error: string | null = null;
   
   statusOptions = [
-    { value: 'pending', label: 'Pending' },
-    { value: 'in progress', label: 'In Progress' },
-    { value: 'completed', label: 'Completed' }
-  ];
-  
+  { value: 'Pending', label: 'Pending' },
+  { value: 'InProgress', label: 'In Progress' },
+  { value: 'Done', label: 'Done' }
+];
+
   priorityOptions = [
-    { value: 'low', label: 'Low' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'high', label: 'High' }
-  ];
+  { value: 'Low', label: 'Low' },
+  { value: 'Medium', label: 'Medium' },
+  { value: 'High', label: 'High' }
+];
+
 
   constructor(
     private fb: FormBuilder,
     private taskService: TaskTrackerServiceService,
   ) {
-    this.taskForm = this.fb.group({
-      title: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['', Validators.maxLength(500)],
-      status: ['pending', Validators.required],
-      priority: ['medium', Validators.required],
-      dueDate: [null]
-    });
+   this.taskForm = this.fb.group({
+  title: ['', [Validators.required, Validators.maxLength(100)]],
+  description: ['', Validators.maxLength(500)],
+  status: ['Pending', Validators.required],
+  priority: ['Medium', Validators.required],
+  dueDate: [null]
+});
   }
 
   ngOnInit(): void {
@@ -51,8 +52,8 @@ export class TaskFormComponent implements OnInit {
       this.taskForm.patchValue({
         title: this.task.title || '',
         description: this.task.description || '',
-        status: this.task.status || 'pending',
-        priority: this.task.priority || 'medium',
+        status: this.task.status || 'Pending',
+        priority: this.task.priority || 'Medium',
         dueDate: this.task.dueDate || null
       });
     }
@@ -82,7 +83,7 @@ export class TaskFormComponent implements OnInit {
     const request = this.isEditMode && this.task.id
       ? this.taskService.updateTask(this.task.id, taskData)
       : this.taskService.createTask(taskData);
-
+    console.log(taskData, 'taskdata')
     request.subscribe({
       next: () => {
         this.saved.emit();
