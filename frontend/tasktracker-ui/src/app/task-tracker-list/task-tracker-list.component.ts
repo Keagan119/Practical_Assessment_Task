@@ -14,7 +14,8 @@ export class TaskTrackerListComponent implements OnInit {
   error: string | null = null;
   showTaskForm = false;
   selectedTask: TaskItem | null = null;
-
+  searchQuery: string = '';
+  sortOption: string = 'dueDate:asc';
   constructor(
     private service: TaskTrackerServiceService
   ) {}
@@ -27,17 +28,10 @@ export class TaskTrackerListComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     
-    this.service.getTasks().subscribe({
-      next: (tasks) => {
-        this.tasks = tasks;
-        console.log(this.tasks, 'tasls')
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading tasks:', err);
-        this.error = 'Failed to load tasks. Please try again later.';
-        this.isLoading = false;
-      }
+    this.service.getTasks(this.searchQuery, this.sortOption).subscribe({
+      next: (tasks) => this.tasks = tasks,
+      error: (err) => this.error = 'Failed to fetch tasks. Please try again.',
+      complete: () => this.isLoading = false
     });
   }
 
