@@ -74,7 +74,7 @@ export class TaskTrackerServiceService {
 
  
   deleteTask(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/task/task-delete/${id}`)
+    return this.http.delete<void>(`${this.baseUrl}/task/${id}`)
     .pipe(
         tap(() => {
           this.notificationService.showSuccess('Task deleted successfully');
