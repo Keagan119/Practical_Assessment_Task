@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 namespace TaskTracker.Api.Filters
 {
-    public class ValidateModels : ActionFilterAttribute
+    public class ValidateModelAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
