@@ -1,7 +1,7 @@
-// task-tracker-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { TaskTrackerServiceService } from '../services/task-tracker-service.service';
 import { TaskItem } from '../models/Task';
+import { NotificationServiceService } from '../services/notification-service.service';
 
 @Component({
   selector: 'app-task-tracker-list',
@@ -17,7 +17,8 @@ export class TaskTrackerListComponent implements OnInit {
   searchQuery: string = '';
   sortOption: string = 'dueDate:asc';
   constructor(
-    private service: TaskTrackerServiceService
+    private service: TaskTrackerServiceService,
+    private notificationService: NotificationServiceService
   ) {}
 
   ngOnInit(): void {
@@ -56,15 +57,15 @@ export class TaskTrackerListComponent implements OnInit {
     this.selectedTask = null;
   }
 
-  onDeleteTask(taskId: number): void {
+  onDeleteTask(id: number): void {
     if (confirm('Are you sure you want to delete this task?')) {
-      this.service.deleteTask(taskId).subscribe({
+      this.service.deleteTask(id).subscribe({
         next: () => {
-          this.loadTasks();
+          this.notificationService.showSuccess('Task deleted successfully');
+          this.loadTasks(); // Refresh the list
         },
-        error: (err) => {
-          console.error('Error deleting task:', err);
-          this.error = 'Failed to delete task. Please try again.';
+        error: (error) => {
+          // Error is already handled by the service
         }
       });
     }

@@ -1,8 +1,8 @@
-// task-form.component.ts
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskItem } from '../models/Task';
 import { TaskTrackerServiceService } from '../services/task-tracker-service.service';
+import { NotificationServiceService } from '../services/notification-service.service';
 
 type FormMode = 'create' | 'edit';
 
@@ -37,6 +37,7 @@ export class TaskFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private taskService: TaskTrackerServiceService,
+    private notificationService: NotificationServiceService
   ) {
    this.taskForm = this.fb.group({
   title: ['', [Validators.required, Validators.maxLength(100)]],
@@ -71,7 +72,12 @@ export class TaskFormComponent implements OnInit {
     if (this.taskForm.invalid) {
       return;
     }
+    const title = this.taskForm.get('title')?.value;
 
+  if (!title || !isNaN(Number(title))) {
+    this.notificationService.showError('Title cannot be purely numeric');
+    return;
+  }
     this.isSubmitting = true;
     this.error = null;
 
@@ -86,12 +92,16 @@ export class TaskFormComponent implements OnInit {
     console.log(taskData, 'taskdata')
     request.subscribe({
       next: () => {
+        const message = this.mode === 'create' 
+          ? 'Task created successfully' 
+          : 'Task updated successfully';
+        
+        this.notificationService.showSuccess(message);
         this.saved.emit();
         this.taskForm.reset();
       },
       error: (err: any) => {
-        console.error('Error saving task:', err);
-        this.error = `Failed to ${this.isEditMode ? 'update' : 'create'} task. Please try again.`;
+      
         this.isSubmitting = false;
       },
       complete: () => {

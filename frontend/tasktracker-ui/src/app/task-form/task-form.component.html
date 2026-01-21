@@ -99,7 +99,7 @@
     type="button"
     class="btn btn-primary"
     (click)="onSubmit()"
-    [disabled]="taskForm.invalid || isSubmitting"
+    [disabled]="isSubmitting"
   >
     <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
     {{ isSubmitting ? 'Saving...' : 'Save Task' }}
