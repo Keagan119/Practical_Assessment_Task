@@ -15,7 +15,7 @@ namespace TaskTracker.Api.Controllers
             _db = db;
         }
 
-        // GET: api/task
+     
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
         {
@@ -23,18 +23,18 @@ namespace TaskTracker.Api.Controllers
             return Ok(tasks);
         }
 
-        // POST: api/task
+      
         [HttpPost]
-        public async Task<ActionResult<TaskItem>> CreateTask(TaskItem task)
-        {
-            task.CreatedAt = DateTime.UtcNow;
-            _db.Tasks.Add(task);
-            await _db.SaveChangesAsync();
+public async Task<ActionResult<TaskItem>> CreateTask([FromBody] TaskItem task)
+{
+    task.CreatedAt = DateTime.UtcNow;
+    _db.Tasks.Add(task);
+    await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTaskById), new { id = task.Id }, task);
-        }
+    return CreatedAtAction(nameof(GetTaskById), new { id = task.Id }, task);
+}
 
-        // GET: api/task/{id}
+        /
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskItem>> GetTaskById(int id)
         {
@@ -43,7 +43,7 @@ namespace TaskTracker.Api.Controllers
             return Ok(task);
         }
 
-        // PUT: api/task/{id}
+       
         [HttpPut("{id}")]
         public async Task<ActionResult<TaskItem>> UpdateTask(int id, TaskItem updatedTask)
         {
@@ -59,5 +59,23 @@ namespace TaskTracker.Api.Controllers
             await _db.SaveChangesAsync();
             return Ok(task);
         }
+
+       
+[HttpDelete("task-delete/{id}")]
+public async Task<IActionResult> DeleteTask(int id)
+{
+    var task = await _db.Tasks.FindAsync(id);
+
+    if (task == null)
+    {
+        return NotFound(new { message = $"Task with id {id} not found." });
+    }
+
+    _db.Tasks.Remove(task);
+    await _db.SaveChangesAsync();
+
+    return NoContent();
+}
+
     }
 }
