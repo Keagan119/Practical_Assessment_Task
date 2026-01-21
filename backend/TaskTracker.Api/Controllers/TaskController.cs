@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Api.Data;
 using TaskTracker.Api.Models;
+using TaskTracker.Api.Filters; 
 namespace TaskTracker.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ValidateModel]
     public class TaskController : ControllerBase
     {
         private readonly AppDbContext _db;
@@ -56,6 +58,10 @@ public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks(
         [HttpPost]
 public async Task<ActionResult<TaskItem>> CreateTask([FromBody] TaskItem task)
 {
+     if (!ModelState.IsValid)
+    {
+        return ValidationProblem(ModelState);
+    }
     task.CreatedAt = DateTime.UtcNow;
     _db.Tasks.Add(task);
     await _db.SaveChangesAsync();
@@ -75,9 +81,22 @@ public async Task<ActionResult<TaskItem>> CreateTask([FromBody] TaskItem task)
        
         [HttpPut("{id}")]
         public async Task<ActionResult<TaskItem>> UpdateTask(int id, TaskItem updatedTask)
-        {
+        {   
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
             var task = await _db.Tasks.FindAsync(id);
-            if (task == null) return NotFound();
+            if (task == null) 
+    {
+        return NotFound(new ProblemDetails
+        {
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+            Title = "Not Found",
+            Status = StatusCodes.Status404NotFound,
+            Detail = $"Task with ID {id} was not found."
+        });
+    }
 
             task.Title = updatedTask.Title;
             task.Description = updatedTask.Description;
