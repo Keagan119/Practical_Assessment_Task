@@ -12,9 +12,13 @@ export class TaskTrackerServiceService {
   constructor(private http: HttpClient) {}
 
 
-  getTasks(): Observable<TaskItem[]> {
-    return this.http.get<TaskItem[]>(`${this.baseUrl}/task`);
-  }
+  getTasks(search?: string, sort?: string): Observable<TaskItem[]> {
+  let params: any = {};
+  if (search) params.q = search;
+  if (sort) params.sort = sort;
+
+  return this.http.get<TaskItem[]>(`${this.baseUrl}/task`, { params });
+}
 
 
   getTask(id: number): Observable<TaskItem> {
