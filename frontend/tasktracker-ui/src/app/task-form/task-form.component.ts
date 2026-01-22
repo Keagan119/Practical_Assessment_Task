@@ -50,12 +50,15 @@ export class TaskFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.mode === 'edit' && this.task) {
+       const dueDate = this.task.dueDate 
+      ? new Date(this.task.dueDate).toISOString().split('T')[0] 
+      : null;
       this.taskForm.patchValue({
         title: this.task.title || '',
         description: this.task.description || '',
         status: this.task.status || 'New',
         priority: this.task.priority || 'Low',
-        dueDate: this.task.dueDate || null
+        dueDate: dueDate
       });
     }
   }
@@ -83,7 +86,7 @@ export class TaskFormComponent implements OnInit {
 
     const taskData = {
       ...this.taskForm.value,
-      dueDate: this.taskForm.value.dueDate || null
+      dueDate: this.taskForm.value.dueDate ? new Date(this.taskForm.value.dueDate).toISOString() : null
     };
 
     const request = this.isEditMode && this.task.id
